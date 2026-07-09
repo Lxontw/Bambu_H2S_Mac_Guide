@@ -789,8 +789,17 @@
         renderDoc(key, card);
       }
       
-      // Reset scroll position of main container
-      document.querySelector('main').scrollTop = 0;
+      // Reset scroll position dynamically to improve UX
+      if (window.innerWidth <= 1024) {
+        // On mobile viewports, smoothly scroll the content card into view
+        const cardElement = document.getElementById('contentCard');
+        if (cardElement) {
+          cardElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        // On desktop, scroll the main window back to the absolute top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
     // Render standard document with markdown
