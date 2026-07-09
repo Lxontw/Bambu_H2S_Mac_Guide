@@ -40,6 +40,14 @@
     *   同時間最多只能有 10 個「可編輯/活動」的文件（其餘可設為唯讀，不限制總存檔數）。
     *   不支援複雜的熱力學/應力模擬分析。
     *   導出格式受限（但**依然支援導出 `.step` 與 `.stl`**，完全不影響 3D 列印）。
+*   **🔄 個人免費版每年過期「續約」解鎖指引（避坑必看）**：
+    Autodesk Fusion 個人免費版的使用期限為 **1 年**。過期後，軟體標題列會顯示「已過期 / 唯讀 (Expired - Read Only)」，且無法建立新設計或存檔。**請勿點擊付費訂閱**，您可以按照以下步驟無限期每年免費續約：
+    1. 關閉 Mac 上的 Fusion 軟體。
+    2. 使用瀏覽器登入 [Fusion 個人免費版續約官網](https://www.autodesk.com/products/fusion-360/personal) 。
+    3. 點擊「立即開始 (Get Started)」，登入您原先的 Autodesk 帳號。
+    4. 系統會偵測到您已有帳號，請再次填寫非商用表單（選擇個人用途、同意非商用條款），並提交。
+    5. 提交完成後，重新打開 Mac 上的 Fusion 軟體，系統會自動重新加載授權，標題列會變回「個人非商用授權 (Personal Use)」，所有檔案自動解鎖，即可繼續免費使用 1 年。
+
 
 ---
 
@@ -55,6 +63,12 @@
     1.  前往  [FreeCAD 官方下載頁面](https://www.freecad.org/downloads.php)  。
     2.  下載適合 macOS 的 `.dmg` 映像檔（提供 Intel 與 Apple Silicon 版本，請根據您的 Mac 晶片選擇）。
     3.  將 FreeCAD 拖入應用程式資料夾即可。
+*   **⌨️ Mac 繁中輸入法卡死與快捷鍵衝突修復**：
+    FreeCAD 在 macOS 下若使用系統預設輸入法，切換至中文時容易導致快捷鍵失效或視窗完全卡死。請進行以下設定優化：
+    1.  **停用中文輸入法對應快捷鍵**：在 FreeCAD 內點選頂部選單 **FreeCAD** ➜ **Preferences** ➜ **General** ➜ 確保在編輯模式下預設使用英數字元。
+    2.  **建模時鎖定英文輸入**：強烈建議在開啟 FreeCAD 進行建模時，按下 Mac 鍵盤的 `Caps Lock` 切換至「英文 (ABC)」輸入狀態，這能 100% 避免因中文字元輸入導致軟體對快捷鍵攔截而當機。
+    3.  **修復快捷鍵衝突**：Mac 系統的 `Command + Space`（切換輸入法或 Spotlight）常與 FreeCAD 的空間定位快捷鍵衝突，建議在 macOS 的「系統設定 ➜ 鍵盤 ➜ 鍵盤快捷鍵」中，將輸入法切換暫時改為其他組合，或在 FreeCAD 內自訂快速鍵。
+
 
 ---
 
@@ -77,6 +91,15 @@
     1.  前往  [Blender 官方下載頁面](https://www.blender.org/download/)  。
     2.  系統會自動偵測您的 OS，請選擇 **macOS Apple Silicon**（若使用 M 系列晶片）或 macOS Intel。
     3.  下載後開啟 `.dmg` 安裝。
+*   **📐 啟用內建 3D-Print Toolbox 插件進行「破洞與非流形網格」一鍵檢查**：
+    AI 影像重構出的模型經常會有肉眼難見的「破面」、「重疊面」或「零厚度面（非流形網格 Non-Manifold）」，這會導致切片軟體報錯。Blender 內建了強大的檢查工具：
+    1.  開啟 Blender，點選 **Edit** ➜ **Preferences** ➜ **Add-ons (插件)**。
+    2.  在右上角搜尋框輸入 `3D`，找到 **「Mesh: 3D-Print Toolbox」** 並勾選啟用。
+    3.  回到 3D 視區，按下鍵盤的 `N` 鍵展開右側面板，您會看到多出一個 **「3D-Print」** 標籤。
+    4.  選擇您的 AI 重建模型，點擊面板上的 **「Check All (全部檢查)」**。
+    5.  工具會即時列出 `Non Manifold Edge` (非流形邊，破洞處) 的數量。點擊該數值，Blender 會自動在編輯模式下選取所有破洞邊。
+    6.  按下鍵盤 `F` 鍵即可自動補洞，或在面模式下點選 **「Make Manifold (自動修復為流形體)」** 進行一鍵修復，修復後再匯出為 STL 列印。
+
 
 ---
 
@@ -85,3 +108,27 @@
 1.  **工程零件與實用小物件**：首選 **Autodesk Fusion**，用它畫好模型後，直接導出 `.step` 格式。
 2.  **公仔造型與手辦**：首選 **Blender**。在 Blender 中設計完成後，必須進行「網格檢查（Mesh Check）」確保沒有破洞，再導出 `.stl` 或 `.obj` 格式。
 3.  **切片軟體安裝**：不論使用哪種軟體建模，最終都必須安裝免費的  [Bambu Studio](https://bambulab.com/zh/download/studio)  （官方 Mac 版）或  [Orca Slicer](https://github.com/SoftFever/OrcaSlicer/releases)  來對模型進行切片，然後送交您的 Bambu Lab H2S 列印。
+
+---
+
+## 🖐️ 4. M 系列 MacBook 觸控板 (Trackpad) 無滑鼠建模最佳設定
+
+如果您使用的是 MacBook 且手邊沒有滑鼠，直接使用觸控板（Trackpad）進行 3D 建模會非常痛苦。透過以下設定，您可以實現極為流暢的「純手勢建模」：
+
+### 4.1 Blender 觸控板最佳配置
+1.  開啟 Blender ➜ **Edit** ➜ **Preferences** ➜ **Input (輸入)**。
+2.  在「滑鼠 (Mouse)」設定下，勾選 **「模擬三鍵滑鼠 (Emulate 3 Button Mouse)」**。
+3.  **手勢操作說明**：
+    *   **旋轉視角 (Rotate)**：按住 Mac 鍵盤的 **`Option` 鍵** + **單指在觸控板滑動**。
+    *   **平移視角 (Pan)**：按住 Mac 鍵盤的 **`Shift` + `Option` 鍵** + **單指在觸控板滑動**。
+    *   **縮放視角 (Zoom)**：在觸控板上使用 **雙指張開/捏合 (Pinch)**，或按住 **`Control` + `Option`** + **單指上下滑動**。
+4.  在 **Navigation (導航)** 標籤下，勾選 **「圍繞選擇物旋轉 (Orbit Around Selection)」**，這樣視角會永遠以您選取的模型為中心旋轉，防範畫面飛走。
+
+### 4.2 Autodesk Fusion 觸控板最佳配置
+1.  開啟 Fusion ➜ 點選右上角您的個人頭像 ➜ **Preferences (偏好設定)**。
+2.  在「一般 (General)」面板中，找到 **「平移、縮放、旋轉捷徑 (Pan, Zoom, Orbit shortcuts)」**。
+3.  將下拉選單改為 **「Mac trackpad (Mac 觸控板)」** 或 **「Gesture (手勢)」** 並儲存。
+4.  **手勢操作說明**：
+    *   **平移 (Pan)**：**雙指在觸控板上滑動**。
+    *   **縮放 (Zoom)**：在觸控板上使用 **雙指捏合/張開**。
+    *   **自由旋轉 (Orbit)**：按住 Mac 鍵盤的 **`Shift` 鍵** + **雙指滑動**。
