@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bambu Lab H2S Mac 軟體指南與 H2S 參數知識庫</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Markdown Parser (Marked.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
+  <!-- CSS Styles -->
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-card: rgba(13, 17, 24, 0.7);
+      --bg-card-hover: rgba(22, 28, 38, 0.8);
+      --border-color: rgba(255, 255, 255, 0.06);
+      --border-glow: rgba(255, 91, 0, 0.3);
+      --text-main: #f0f3f8;
+      --text-muted: #8a99ad;
+      --color-primary: #ff5b00; /* Bambu Orange */
+      --color-secondary: #00f2fe; /* Cyber Teal */
+      --font-title: 'Outfit', 'Inter', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --glow-shadow: 0 0 20px rgba(255, 91, 0, 0.15);
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      overflow-y: scroll; /* Force vertical scrollbar to avoid layout shift */
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 91, 0, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.04) 0%, transparent 45%);
+      background-attachment: fixed;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 91, 0, 0.4);
+    }
+
+    /* Container Grid */
+    .app-container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Sidebar Design */
+    aside {
+      background: rgba(7, 9, 14, 0.85);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border-color);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      overflow-y: auto; /* Sidebar self-scrolling */
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--font-title);
+      box-shadow: 0 0 15px rgba(255, 91, 0, 0.4);
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(to right, #fff, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Search Box */
+    .search-box {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .search-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 10px rgba(255, 91, 0, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Navigation List */
+    .nav-list {
+      list-style: none;
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-right: 0.25rem;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: var(--transition-smooth);
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.05);
+      transform: translateX(3px);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(255, 91, 0, 0.15) 0%, rgba(0, 242, 254, 0.05) 100%);
+      border-color: rgba(255, 91, 0, 0.3);
+      box-shadow: var(--glow-shadow);
+    }
+
+    .nav-number {
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: var(--color-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-link.active .nav-number {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Main Area Design */
+    main {
+      padding: 3rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      min-height: 100vh;
+    }
+
+    /* Content Transition Card */
+    .content-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 3.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      transition: var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .content-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+      opacity: 0.75;
+    }
+
+    /* Welcome Section / Home View */
+    .welcome-container {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .welcome-text h2 {
+      font-family: var(--font-title);
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #fff 30%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-text p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    .welcome-badge {
+      display: inline-block;
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--color-primary);
+      background: rgba(255, 91, 0, 0.1);
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 91, 0, 0.2);
+      margin-bottom: 1rem;
+    }
+
+    /* 3D Printer Animation Container */
+    .printer-showcase {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 300px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .printer-svg {
+      width: 100%;
+      height: 100%;
+      max-width: 280px;
+    }
+
+    /* SVG Keyframes & Motion styles */
+    .print-head {
+      animation: printMove 4s infinite linear;
+    }
+
+    .print-beam {
+      animation: beamMove 4s infinite linear;
+    }
+
+    .laser-line {
+      stroke: var(--color-primary);
+      stroke-width: 1.5;
+      filter: drop-shadow(0 0 4px var(--color-primary));
+      animation: laserPulse 0.15s infinite alternate;
+    }
+
+    .printed-part {
+      fill: none;
+      stroke: var(--color-secondary);
+      stroke-width: 1.5;
+      filter: drop-shadow(0 0 3px var(--color-secondary));
+      animation: printGrow 8s infinite ease-in-out;
+    }
+
+    .bed {
+      animation: bedLower 8s infinite ease-in-out;
+    }
+
+    @keyframes printMove {
+      0%, 100% { transform: translate(0px, 0px); }
+      12.5% { transform: translate(60px, 10px); }
+      25% { transform: translate(-30px, 20px); }
+      37.5% { transform: translate(50px, -5px); }
+      50% { transform: translate(10px, 15px); }
+      62.5% { transform: translate(-50px, 5px); }
+      75% { transform: translate(30px, 25px); }
+      87.5% { transform: translate(-20px, 0px); }
+    }
+
+    @keyframes beamMove {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(20px); }
+    }
+
+    @keyframes laserPulse {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes bedLower {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(35px); }
+    }
+
+    @keyframes printGrow {
+      0%, 100% { stroke-dasharray: 0 1000; }
+      50% { stroke-dasharray: 600 1000; }
+    }
+
+    /* Markdown Render Engine Styling (Anti-Slop Clean Typography) */
+    .markdown-body {
+      font-size: 1rem;
+      color: var(--text-main);
+      overflow-wrap: break-word;
+    }
+
+    .markdown-body h1, 
+    .markdown-body h2, 
+    .markdown-body h3, 
+    .markdown-body h4 {
+      font-family: var(--font-title);
+      color: #fff;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .markdown-body h1 {
+      font-size: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.75rem;
+      margin-top: 0;
+      background: linear-gradient(to right, #fff, #b4c6e4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .markdown-body h2 {
+      font-size: 1.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+      color: var(--color-primary);
+    }
+
+    .markdown-body h3 {
+      font-size: 1.15rem;
+      color: var(--color-secondary);
+    }
+
+    .markdown-body p {
+      margin-bottom: 1.25rem;
+      color: #cbd5e1;
+      text-align: justify;
+    }
+
+    .markdown-body a {
+      color: var(--color-secondary);
+      text-decoration: none;
+      border-bottom: 1.5px solid transparent;
+      padding-bottom: 1px;
+      transition: var(--transition-smooth);
+    }
+
+    .markdown-body a:hover {
+      border-color: var(--color-secondary);
+      color: #fff;
+    }
+
+    .markdown-body ul, 
+    .markdown-body ol {
+      margin-bottom: 1.25rem;
+      padding-left: 2rem;
+      color: #cbd5e1;
+    }
+
+    .markdown-body li {
+      margin-bottom: 0.5rem;
+    }
+
+    .markdown-body li::marker {
+      color: var(--color-primary);
+    }
+
+    /* Callouts / Blockquotes */
+    .markdown-body blockquote {
+      border-left: 4px solid var(--color-primary);
+      background: rgba(255, 91, 0, 0.04);
+      padding: 1.25rem 1.75rem;
+      border-radius: 0 12px 12px 0;
+      margin: 1.5rem 0;
+      color: var(--text-main);
+    }
+    
+    .markdown-body blockquote p {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* Glassmorphic Tables */
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      background: rgba(255, 255, 255, 0.01);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .markdown-body th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+      font-family: var(--font-title);
+      text-align: left;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .markdown-body td {
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .markdown-body tr:last-child td {
+      border-bottom: none;
+    }
+
+    .markdown-body tr:hover td {
+      background: rgba(255, 255, 255, 0.015);
+      color: #fff;
+    }
+
+    /* Inline Code and Code Blocks */
+    .markdown-body code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      color: var(--color-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .markdown-body pre {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .markdown-body pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #f1f5f9;
+      font-size: 0.85rem;
+      display: block;
+      line-height: 1.5;
+    }
+
+    /* Copy Code Button */
+    .copy-btn {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      font-family: var(--font-title);
+    }
+
+    .copy-btn:hover {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* Footers */
+    footer {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    .footer-links a:hover {
+      color: var(--color-primary);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      aside {
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+      main {
+        padding: 2rem;
+      }
+      .welcome-container {
+        grid-template-columns: 1fr;
+      }
+      .printer-showcase {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside>
+      <div class="brand">
+        <div class="brand-logo">H2S</div>
+        <div class="brand-text">
+          <h1>Bambu Lab H2S</h1>
+          <p>Mac 專屬技術知識庫</p>
+        </div>
+      </div>
+      
+      <!-- Search -->
+      <div class="search-box">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="搜尋專案指南與參數..." oninput="handleSearch()">
+      </div>
+      
+      <!-- Navigation Links -->
+      <ul class="nav-list" id="navList">
+        <li class="nav-item">
+          <button class="nav-link active" onclick="loadDocument('home')">
+            <span class="nav-number">MOC</span>
+            <span>專案概覽與首頁</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-01" onclick="loadDocument('01_SPEC')">
+            <span class="nav-number">01</span>
+            <span>需求規格書 (SPEC)</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-02" onclick="loadDocument('02_Mac_Software_Guide')">
+            <span class="nav-number">02</span>
+            <span>Mac 免費 3D 軟體推薦</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-03" onclick="loadDocument('03_File_Formats_Guide')">
+            <span class="nav-number">03</span>
+            <span>3D 格式轉換與實踐</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-04" onclick="loadDocument('04_H2S_Material_Parameters')">
+            <span class="nav-number">04</span>
+            <span>H2S 材料參數與防翹曲</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-05" onclick="loadDocument('05_Bambu_Studio_Workflow')">
+            <span class="nav-number">05</span>
+            <span>Bambu Studio 基礎操作</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-06" onclick="loadDocument('06_AI_3D_Reconstruction_Guide')">
+            <span class="nav-number">06</span>
+            <span>AI 影像建模與 Mac 修模</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-07" onclick="loadDocument('07_Agent_MCP_Automation')">
+            <span class="nav-number">07</span>
+            <span>Agent MCP 自動化指南</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="btn-plan" onclick="loadDocument('plan')">
+            <span class="nav-number">Plan</span>
+            <span>實作里程碑與計畫</span>
+          </button>
+        </li>
+      </ul>
+      
+      <!-- Sidebar Footer -->
+      <footer>
+        <div>ViberCoding © 2026</div>
+      </footer>
+    </aside>
+    
+    <!-- Main Content Panel -->
+    <main>
+      <div class="content-card" id="contentCard">
+        <!-- Dyn-HTML rendered here -->
+      </div>
+    </main>
+    
+  </div>
+
+  <!-- JavaScript Modules & Documents Database -->
+  <script>
+    // Embedded Documents Database (Base64 encoded to avoid syntax/quote conflicts)
+    const DOCUMENTS_BASE64 = __REPLACE_DOCUMENTS_BASE64__;
+
+    // Helper to decode Base64 UTF-8 string
+    function decodeBase64Utf8(base64Str) {
+      const binaryString = atob(base64Str);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return new TextDecoder("utf-8").decode(bytes);
+    }
+
+    // Initialize Markdown Parser Options safely
+    let markedInitialized = false;
+    function initMarked() {
+      if (markedInitialized || typeof marked === 'undefined') return;
+      marked.setOptions({
+        renderer: new marked.Renderer(),
+        gfm: true,
+        breaks: true,
+        pedantic: false,
+        sanitize: false,
+        smartLists: true,
+        smartypants: true
+      });
+      markedInitialized = true;
+    }
+
+    // Active Document Key
+    let activeKey = "home";
+
+    // Handle Nav Click and Render
+    function loadDocument(key) {
+      activeKey = key;
+      
+      // Toggle nav active classes
+      const links = document.querySelectorAll('.nav-link');
+      links.forEach(link => link.classList.remove('active'));
+      
+      // Update target nav link status
+      if (key === 'home') {
+        links[0].classList.add('active');
+      } else {
+        const activeLink = document.querySelector(`.nav-link[onclick="loadDocument('${key}')"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+
+      const card = document.getElementById('contentCard');
+      card.style.animation = 'none';
+      card.offsetHeight; // trigger reflow
+      card.style.animation = 'fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
+
+      if (key === 'home') {
+        renderHome(card);
+      } else {
+        renderDoc(key, card);
+      }
+      
+      // Reset scroll position of main container
+      document.querySelector('main').scrollTop = 0;
+    }
+
+    // Render standard document with markdown
+    function renderDoc(key, container) {
+      const rawMarkdown = decodeBase64Utf8(DOCUMENTS_BASE64[key]);
+      
+      if (typeof marked === 'undefined') {
+        renderOfflineFallback(rawMarkdown, container);
+        return;
+      }
+      
+      initMarked();
+      const htmlContent = marked.parse(rawMarkdown);
+      
+      container.innerHTML = `
+        <article class="markdown-body">
+          ${htmlContent}
+        </article>
+      `;
+
+      // Apply copy button to all pre blocks
+      const pres = container.querySelectorAll('pre');
+      pres.forEach(pre => {
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.innerText = '複製';
+        btn.onclick = () => {
+          navigator.clipboard.writeText(pre.querySelector('code').innerText);
+          btn.innerText = '已複製!';
+          setTimeout(() => btn.innerText = '複製', 2000);
+        };
+        pre.appendChild(btn);
+      });
+    }
+
+    // Render an elegant fallback when marked.js CDN fails to load (offline scenario)
+    function renderOfflineFallback(rawMarkdown, container) {
+      container.innerHTML = `
+        <div style="padding: 2.5rem; border: 1px solid var(--color-primary); border-radius: 12px; background: rgba(255, 91, 0, 0.04); margin-bottom: 2rem;">
+          <h3 style="color: var(--color-primary); margin-bottom: 0.75rem; font-family: var(--font-title); display: flex; align-items: center; gap: 0.5rem;">
+            <span>⚠️ 離線加載提示 (Offline Mode)</span>
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;">
+            本網頁採用 CDN 動態解析 Markdown。目前檢測到您的瀏覽器處於離線狀態，或無法連線至 marked.js 的 CDN。
+            我們已為您切換至「原生代碼閱讀模式」，您也可以直接使用 Obsidian 等本地編輯器開啟對應的 Markdown 文件閱讀。
+          </p>
+          <pre style="background: rgba(0, 0, 0, 0.5); padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.85rem; color: #cbd5e1; white-space: pre-wrap; border: 1px solid var(--border-color);">${rawMarkdown}</pre>
+        </div>
+      `;
+    }
+
+    // Render Home/MOC Page with dynamic 3D simulation
+    function renderHome(container) {
+      const rawMarkdown = decodeBase64Utf8(DOCUMENTS_BASE64["home"]);
+      
+      let htmlContent = "";
+      if (typeof marked === 'undefined') {
+        htmlContent = `<div style="padding: 1.5rem; border: 1px solid var(--color-primary); border-radius: 12px; background: rgba(255, 91, 0, 0.05); margin-bottom: 2rem;">
+          <h3 style="color: var(--color-primary); margin-bottom: 0.5rem; font-family: var(--font-title);">⚠️ 離線閱讀模式 (Offline Mode)</h3>
+          <p style="color: var(--text-main); font-size: 0.9rem;">檢測到瀏覽器未能從網際網路加載 Markdown 解析引擎 (marked.js)。請連接網路，或直接閱讀本指南內容。</p>
+        </div>`;
+      } else {
+        initMarked();
+        htmlContent = marked.parse(rawMarkdown);
+      }
+      
+      container.innerHTML = `
+        <article class="markdown-body">
+          ${htmlContent}
+          
+          <!-- 3D Printer Animation -->
+          <div class="printer-showcase">
+            <svg class="printer-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <!-- Printer Frame -->
+              <rect x="30" y="20" width="140" height="160" rx="10" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" />
+              <!-- Glass Door Accent -->
+              <rect x="40" y="30" width="120" height="140" rx="6" fill="none" stroke="rgba(0, 242, 254, 0.1)" stroke-width="1" />
+              
+              <!-- Hotbed Platform (Z-axis movement) -->
+              <g class="bed">
+                <!-- Lead Screw -->
+                <line x1="100" y1="20" x2="100" y2="180" stroke="rgba(255, 255, 255, 0.08)" stroke-width="4" stroke-dasharray="2, 2" />
+                <!-- Heated Bed Plate -->
+                <polygon points="45,130 155,130 140,145 60,145" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" />
+                <!-- PEI Texture overlay -->
+                <polygon points="50,132 150,132 137,143 63,143" fill="rgba(255, 91, 0, 0.1)" />
+                
+                <!-- Growing 3D Print Shape -->
+                <path class="printed-part" d="M 85,130 L 85,115 L 100,95 L 115,115 L 115,130 Z" />
+              </g>
+              
+              <!-- Gantry Beam (XY axis) -->
+              <g class="print-beam">
+                <!-- Carbon Fiber Rods -->
+                <line x1="32" y1="50" x2="168" y2="50" stroke="rgba(255, 255, 255, 0.2)" stroke-width="3" />
+                <line x1="32" y1="55" x2="168" y2="55" stroke="rgba(255, 255, 255, 0.2)" stroke-width="3" />
+                
+                <!-- Print Toolhead (X/Y movement) -->
+                <g class="print-head">
+                  <!-- Extruder Body -->
+                  <rect x="85" y="40" width="30" height="25" rx="3" fill="rgba(20, 24, 33, 0.95)" stroke="var(--color-primary)" stroke-width="1.5" />
+                  <!-- Bambu H2S Logo detail -->
+                  <rect x="97" y="47" width="6" height="6" fill="var(--color-secondary)" rx="1" />
+                  
+                  <!-- Hotend Nozzle -->
+                  <polygon points="96,65 104,65 100,72" fill="#8a99ad" />
+                  
+                  <!-- Laser Line / Heat Glow -->
+                  <line class="laser-line" x1="100" y1="72" x2="100" y2="105" />
+                </g>
+              </g>
+              
+              <!-- Info HUD Overlay -->
+              <text x="45" y="170" fill="var(--color-secondary)" font-family="var(--font-mono)" font-size="7" opacity="0.8">CHAMBER: 65°C</text>
+              <text x="115" y="170" fill="var(--color-primary)" font-family="var(--font-mono)" font-size="7" opacity="0.8">NOZZLE: 285°C</text>
+            </svg>
+          </div>
+        </article>
+      `;
+    }
+
+    // Global Search Logic across all documents
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const links = document.querySelectorAll('.nav-link');
+      
+      if (!query) {
+        // Show all list items if query is empty
+        document.querySelectorAll('.nav-item').forEach(item => item.style.display = 'block');
+        return;
+      }
+
+      document.querySelectorAll('.nav-item').forEach((item, index) => {
+        // skip home and plan for simple search indexing
+        if (index === 0 || index === links.length - 1) return;
+        
+        const key = links[index].getAttribute('onclick').match(/'([^']+)'/)[1];
+        const rawContent = decodeBase64Utf8(DOCUMENTS_BASE64[key]);
+        const content = rawContent.toLowerCase();
+        const title = links[index].querySelector('span:last-child').innerText.toLowerCase();
+
+        if (content.includes(query) || title.includes(query)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Trigger Initial Render
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDocument("home");
+    });
+  </script>
+</body>
+</html>
